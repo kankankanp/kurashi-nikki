@@ -3,24 +3,74 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kurashi Nikki | くらしの発見を、次の一枚へ</title>
-    <meta name="description" content="Kurashi Nikki は、暮らしの情報を分かりやすい写真カルーセルへ整えるコンテンツ作成サービスです。" />
+    <title>Kurashi Nikki | TikTok下書き作成</title>
+    <meta name="description" content="note記事から作成した写真カルーセルを確認・編集し、TikTokの下書きへ送るコンテンツ作成ツールです。" />
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <main>
-      <p class="brand">Kurashi Nikki</p>
-      <h1>くらしの発見を、<br />次の一枚へ。</h1>
-      <p class="lead">noteで届ける暮らしのヒントを、見つけやすく、楽しめる形へ整えるコンテンツ作成サービスです。</p>
-      <section>
-        <h2>TikTokとの連携について</h2>
-        <p>作成した写真カルーセルは、内容を確認・編集したうえでTikTokの下書きへ送れます。公開はTikTokアプリ内で最終確認後に行います。</p>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Kurashi Nikki ホーム">Kurashi Nikki</a>
+      <span id="connection-status" class="status disconnected">未連携</span>
+    </header>
+
+    <main class="workspace">
+      <section class="intro">
+        <p class="eyebrow">TikTok draft studio</p>
+        <h1>公開する前に、<br />一枚ずつ確かめる。</h1>
+        <p>note記事から作成したカルーセルを確認・編集し、TikTokの受信箱へ下書きとして送ります。公開操作はTikTokアプリ内で行います。</p>
       </section>
+
+      <section class="panel account-panel" aria-labelledby="account-heading">
+        <div>
+          <p class="step">STEP 1</p>
+          <h2 id="account-heading">投稿先アカウント</h2>
+          <div id="account-card" class="account-card" hidden>
+            <img id="account-avatar" alt="" />
+            <div><span class="muted">接続中</span><strong id="account-name"></strong></div>
+          </div>
+          <p id="account-message" class="muted">TikTokアカウントを接続して、投稿先を確認します。</p>
+        </div>
+        <div class="account-actions">
+          <a id="connect-button" class="button primary" href="/api/tiktok/connect">TikTokと連携</a>
+          <button id="logout-button" class="button ghost" type="button" hidden>連携を解除</button>
+        </div>
+      </section>
+
+      <form id="draft-form" class="panel editor" novalidate>
+        <div class="panel-heading">
+          <div><p class="step">STEP 2</p><h2>下書き内容</h2></div>
+          <span class="pill">写真カルーセル</span>
+        </div>
+
+        <label for="title">タイトル <span id="title-count">0 / 90</span></label>
+        <input id="title" maxlength="90" required placeholder="例：昭和の台所に、ひとつだけ令和の道具があります" />
+
+        <label for="description">説明文 <span id="description-count">0 / 4000</span></label>
+        <textarea id="description" maxlength="4000" rows="5" required placeholder="答えと商品の魅力、紹介したnote記事への案内を入力します。"></textarea>
+
+        <label for="image-urls">公開画像URL <span id="image-count">0枚</span></label>
+        <textarea id="image-urls" rows="6" required placeholder="https://.../slide-01.png&#10;https://.../slide-02.png&#10;1行に1つ、所有確認済みURLを入力"></textarea>
+        <p class="hint">1〜35枚。TikTokで所有確認済みのSupabase URLのみ送信できます。</p>
+
+        <div class="preview-header"><h3>送信前プレビュー</h3><span id="preview-empty" class="muted">画像URLを入力してください</span></div>
+        <div id="preview" class="preview" aria-live="polite"></div>
+
+        <fieldset>
+          <legend>投稿内容の確認</legend>
+          <label class="check"><input id="aigc" type="checkbox" checked /><span>AIで生成・編集した画像を含む</span></label>
+          <label class="check"><input id="commercial" type="checkbox" checked /><span>アフィリエイトを含む商用コンテンツである</span></label>
+          <label class="check important"><input id="consent" type="checkbox" required /><span>画像・タイトル・説明文を確認し、TikTokの下書きへ送ることに同意します</span></label>
+        </fieldset>
+
+        <div class="submit-row">
+          <p class="hint">この操作だけでは公開されません。TikTokアプリで最終確認が必要です。</p>
+          <button id="send-button" class="button primary" type="submit">TikTokの下書きへ送る</button>
+        </div>
+        <div id="result" class="result" role="status" hidden></div>
+      </form>
     </main>
-    <footer>
-      <a href="/terms/">利用規約</a>
-      <a href="/privacy/">プライバシーポリシー</a>
-      <span>© Kurashi Nikki</span>
-    </footer>
+
+    <footer><a href="/terms/">利用規約</a><a href="/privacy/">プライバシーポリシー</a><span>© Kurashi Nikki</span></footer>
+    <script src="/app.js" defer></script>
   </body>
 </html>
